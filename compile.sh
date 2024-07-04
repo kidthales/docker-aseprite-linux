@@ -32,7 +32,7 @@ cd /output
 
 if [ ! -d "/output/aseprite" ]
 then
-  git clone -b v1.2.40 --recursive https://github.com/aseprite/aseprite.git
+  git clone -b v1.3.7 --recursive https://github.com/aseprite/aseprite.git
 fi
 
 cd aseprite
@@ -42,6 +42,7 @@ cd build
 echo "Compiling Asperite"
 cmake \
   -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+  -DENABLE_UI=OFF \
   -DLAF_BACKEND=skia \
   -DSKIA_DIR=/dependencies/skia \
   -DSKIA_LIBRARY_DIR=/dependencies/skia/out/Release-x64 \
