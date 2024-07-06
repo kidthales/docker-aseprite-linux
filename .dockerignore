@@ -1,0 +1,3 @@
+**/*
+!output/aseprite/build/bin
+!compile.sh

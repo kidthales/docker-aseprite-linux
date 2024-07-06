@@ -1,21 +1,61 @@
-FROM python
+#syntax=docker/dockerfile:1.4
 
-#Required for tzdata
-ENV TZ=Europe/Amsterdam
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# The different stages of this Dockerfile are meant to be built into separate images.
+# https://docs.docker.com/develop/develop-images/multistage-build/#stop-at-a-specific-build-stage
+# https://docs.docker.com/compose/compose-file/#target
 
-# Install dependencies
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN apt-get install -y git unzip curl build-essential cmake ninja-build libx11-dev libxcursor-dev libxi-dev libgl1-mesa-dev libfontconfig1-dev
+ARG python_version
 
-COPY compile.sh /
+FROM python:${python_version} as compile
+
+# Required for tzdata.
+ARG timezone
+RUN ln -snf /usr/share/zoneinfo/${timezone} /etc/localtime && echo ${timezone} > /etc/timezone
+
+# Install dependencies.
+RUN apt-get update && apt-get upgrade -y && apt-get install -y \
+	build-essential \
+	cmake \
+	curl \
+	git \
+	libfontconfig1-dev \
+	libgl1-mesa-dev \
+	libx11-dev \
+	libxcursor-dev \
+	libxi-dev \
+	ninja-build \
+	unzip
+
+COPY --link --chmod=755 compile.sh /compile-aseprite
 
 VOLUME /dependencies
 VOLUME /output
 
 WORKDIR /output
 
-RUN ["chmod", "+x", "/compile.sh"]
+ENTRYPOINT ["/compile-aseprite"]
 
-ENTRYPOINT ["/compile.sh"]
+FROM debian:bookworm-slim as aseprite
+
+# Assumes compiled output exists on host; see compile stage.
+COPY output/aseprite/build/bin /opt/aseprite/bin
+
+# Ensure binary is found in $PATH.
+RUN ln -s /opt/aseprite/bin/aseprite /usr/local/bin/aseprite
+
+# Install dependencies.
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
+	libfontconfig1 \
+	libgl1 \
+	libssl3 \
+	libxcursor1 \
+	&& rm -rf /var/lib/apt/lists/*
+
+# Smoke test.
+RUN aseprite --help
+
+WORKDIR /tmp
+
+CMD ["--help"]
+
+ENTRYPOINT ["aseprite"]

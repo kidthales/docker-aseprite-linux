@@ -1,0 +1,17 @@
+services:
+  aseprite:
+    image: ${IMAGES_PREFIX:-}aseprite:compile-${ASEPRITE_COMPILE_TAG:-latest}
+    build:
+      context: .
+      target: compile
+      args:
+        python_version: ${ASEPRITE_COMPILE_PYTHON_VERSION:-3.12.4-bookworm}
+        timezone: ${ASEPRITE_COMPILE_TIMEZONE:-UTC}
+    volumes:
+      - './output:/output:rw'
+      - './dependencies:/dependencies:rw'
+
+  bash:
+    image: bash
+    volumes:
+      - '.:/project:rw'
