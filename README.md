@@ -2,6 +2,8 @@
 
 This repository allows you to compile Aseprite without installing any build tools.
 
+---
+
 > ⚠️ Warning: upstream repository does not declare an explicit license and so must default
 > to [License: No Permission](https://choosealicense.com/no-permission/).
 >    - Then why work on this? [Ethical imperative](https://en.wikipedia.org/wiki/Hacker_ethic).
