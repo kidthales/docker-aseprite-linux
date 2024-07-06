@@ -1,4 +1,5 @@
 services:
+  # Extends service from compose.yaml.
   aseprite:
     image: ${IMAGES_PREFIX:-}aseprite:${ASEPRITE_TAG:-latest}
     build:

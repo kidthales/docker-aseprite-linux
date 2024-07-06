@@ -10,3 +10,8 @@ services:
     volumes:
       - './output:/output:rw'
       - './dependencies:/dependencies:rw'
+
+  bash:
+    image: bash
+    volumes:
+      - '.:/project:rw'

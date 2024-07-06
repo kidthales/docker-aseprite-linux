@@ -32,4 +32,4 @@ dist-clean-skia: ## Remove skia build dependency.
 	@rm -rf dependencies/skia
 
 chown: ## Fix file ownership issues on linux hosts.
-	@docker run --rm -v ${PWD}/output:/output -v ${PWD}/dependencies:/dependencies bash chown -R $$(id -u):$$(id -g) /output /dependencies
+	@$(DOCKER_COMP) run --build --rm bash chown -R $$(id -u):$$(id -g) /project
