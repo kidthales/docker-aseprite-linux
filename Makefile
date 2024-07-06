@@ -16,4 +16,3 @@ aseprite: ## Compile Aseprite, pass the parameter "c=" to specify compilation op
 image: ## Build Aseprite image.
 	@$(MAKE) aseprite c=''
 	@$(DOCKER_COMP) -f compose.yaml -f compose.image.yaml build aseprite
-
