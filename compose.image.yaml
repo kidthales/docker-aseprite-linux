@@ -1,0 +1,5 @@
+services:
+  aseprite:
+    image: ${IMAGES_PREFIX:-}aseprite:${ASEPRITE_TAG:-latest}
+    build:
+      target: aseprite
