@@ -31,7 +31,7 @@ make image
 
 ## Usage
 
-```shell
+```text
  —— ⬜ 🐳 Docker Aseprite Linux Makefile 🐳 ⬜ —————————————————————————————————— 
 help                           Outputs this help screen.
 aseprite                       Compile Aseprite, pass the parameter "c=" to specify compilation options, example: make aseprite c='--git-ref-aseprite main' (TODO).
