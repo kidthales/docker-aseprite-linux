@@ -3,7 +3,7 @@ DOCKER_COMP = docker compose
 
 # Misc
 .DEFAULT_GOAL = help
-.PHONY        : help aseprite image clean dist-clean dist-clean-aseprite dist-clean-depot dist-clean-skia chown
+.PHONY        : help aseprite image clean dist-clean dist-clean-aseprite dist-clean-depot dist-clean-skia chown bats
 
 ## —— ⬜ 🐳 Docker Aseprite Linux Makefile 🐳 ⬜ ——————————————————————————————————
 help: ## Outputs this help screen.
@@ -33,3 +33,6 @@ dist-clean-skia: ## Remove skia build dependency.
 
 chown: ## Fix file ownership issues on linux hosts.
 	@$(DOCKER_COMP) run --build --rm bash chown -R $$(id -u):$$(id -g) /project
+
+bats: ## Run unit tests.
+	@$(DOCKER_COMP) run --build --rm bats
