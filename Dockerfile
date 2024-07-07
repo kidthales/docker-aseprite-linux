@@ -40,8 +40,10 @@ FROM debian:bookworm-slim as aseprite
 # Assumes compiled output exists on host; see compile stage.
 COPY output/aseprite/build/bin /opt/aseprite/bin
 
+WORKDIR /tmp
+
 # Ensure binary is found in $PATH.
-RUN ln -s /opt/aseprite/bin/aseprite /usr/local/bin/aseprite
+RUN ln -s /opt/aseprite/bin/aseprite /usr/local/bin/aseprite && ln -s /opt/aseprite/bin/aseprite /usr/local/bin/ase
 
 # Install dependencies.
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
@@ -54,8 +56,10 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
 # Smoke test.
 RUN aseprite --help
 
-WORKDIR /tmp
+COPY --link --chmod=755 entrypoint.sh /docker-aseprite-entrypoint
+
+RUN ln -s /docker-aseprite-entrypoint /usr/local/bin/docker-aseprite-entrypoint
+
+ENTRYPOINT ["docker-aseprite-entrypoint"]
 
 CMD ["--help"]
-
-ENTRYPOINT ["aseprite"]
