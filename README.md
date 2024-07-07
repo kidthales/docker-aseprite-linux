@@ -70,6 +70,22 @@ Usage:
 
 ## Additional Information
 
+### `.env`
+
+Use a git ignored [.env file](https://docs.docker.com/compose/environment-variables/variable-interpolation/#env-file) to
+override compilation defaults and image naming.
+
+```dotenv
+# Example .env file.
+IMAGES_PREFIX=my-vendor/
+ASEPRITE_GIT_REF=v1.3.7
+ASEPRITE_COMPILE_PYTHON_VERSION=3.11-bookworm
+ASEPRITE_COMPILE_TIMEZONE=Canada/Pacific
+SKIA_GIT_REF=aseprite-m121
+BUILD_TYPE=Debug
+ENABLE_UI=OFF
+```
+
 > TODO
 
 ## Acknowledgments

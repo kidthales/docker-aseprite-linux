@@ -157,8 +157,6 @@ dalc_build_deps() {
 	if [ -d "${path_deps_skia}" ]; then
 		local git_ref
 
-		git config --global --add safe.directory "${path_deps_skia}"
-
 		cd "${path_deps_skia}"
 
 		git_ref="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
@@ -204,8 +202,6 @@ dalc_build_aseprite() {
 
 	if [ -d "${path_out_aseprite}" ]; then
 		local git_ref
-
-		git config --global --add safe.directory "${path_out_aseprite}"
 
 		cd "${path_out_aseprite}"
 
