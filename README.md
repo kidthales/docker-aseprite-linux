@@ -44,6 +44,28 @@ dist-clean-skia                Remove skia build dependency.
 chown                          Fix file ownership issues on linux hosts.
 ```
 
+```text
+Compile Aseprite for Linux
+
+Usage:
+  compile-aseprite [-h|--help] | [--git-ref-skia <git-ref>] [--git-ref-aseprite <git-ref>] [--build-type <build-type>] [--headless]
+
+  -h, --help
+    Outputs this help screen.
+
+  --git-ref-skia <git-ref>
+    The git-ref to use when cloning https://github.com/aseprite/skia.git. Defaults to aseprite-m102.
+
+  --git-ref-aseprite <git-ref>
+    The git-ref to use when cloning https://github.com/aseprite/aseprite.git. Defaults to main.
+
+  --build-type <build-type>
+    The value used for -DCMAKE_BUILD_TYPE. Defaults to RelWithDebInfo.
+
+  --headless
+    Sets value used for -DENABLE_UI to OFF. Defaults to ON.
+```
+
 ## Additional Information
 
 > TODO

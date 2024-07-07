@@ -34,5 +34,5 @@ dist-clean-skia: ## Remove skia build dependency.
 chown: ## Fix file ownership issues on linux hosts.
 	@$(DOCKER_COMP) run --build --rm bash chown -R $$(id -u):$$(id -g) /project
 
-bats: ## Run unit tests.
+bats: ## Run unit tests (TODO).
 	@$(DOCKER_COMP) run --build --rm bats
