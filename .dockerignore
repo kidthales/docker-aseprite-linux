@@ -1,3 +1,4 @@
 **/*
 !output/aseprite/build/bin
 !compile.sh
+!entrypoint.sh
