@@ -3,24 +3,27 @@ DOCKER_COMP = docker compose
 
 # Misc
 .DEFAULT_GOAL = help
-.PHONY        : help aseprite image clean dist-clean dist-clean-aseprite dist-clean-depot dist-clean-skia chown
+.PHONY        : help help-aseprite aseprite image clean dist-clean dist-clean-aseprite dist-clean-depot dist-clean-skia chown bats
 
 ## —— ⬜ 🐳 Docker Aseprite Linux Makefile 🐳 ⬜ ——————————————————————————————————
 help: ## Outputs this help screen.
 	@grep -E '(^[a-zA-Z0-9\./_-]+:.*?##.*$$)|(^##)' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}{printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
 
-aseprite: ## Compile Aseprite, pass the parameter "c=" to specify compilation options, example: make aseprite c='--git-ref-aseprite main' (TODO).
+help-aseprite: ## Outputs compile-aseprite help screen.
+	@bash "$(CURDIR)/compile.sh" --help
+
+aseprite: ## Compile Aseprite, pass the parameter "c=" to specify compilation options, example: make aseprite c='--git-ref-aseprite main'.
 	@$(eval c ?=)
 	@$(DOCKER_COMP) run --build --rm aseprite $(c)
 
 image: ## Build Aseprite image.
-	@$(MAKE) aseprite c=''
+	@$(MAKE) aseprite c='--headless --git-ref-aseprite v1.3.7'
 	@$(DOCKER_COMP) -f compose.yaml -f compose.image.yaml build aseprite
 
 clean: ## Remove Aseprite build artifacts.
 	@rm -rf output/aseprite/build
 
-dist-clean: dist-clean-aseprite dist-clean-depot dist-clean-skia ## Remove Aseprite build artifacts & all build dependencies
+dist-clean: dist-clean-aseprite dist-clean-depot dist-clean-skia ## Remove Aseprite build artifacts & all build dependencies.
 
 dist-clean-aseprite: ## Remove Aseprite build artifacts & project.
 	@rm -rf output/aseprite
@@ -33,3 +36,6 @@ dist-clean-skia: ## Remove skia build dependency.
 
 chown: ## Fix file ownership issues on linux hosts.
 	@$(DOCKER_COMP) run --build --rm bash chown -R $$(id -u):$$(id -g) /project
+
+bats: ## Run unit tests (TODO).
+	@$(DOCKER_COMP) run --build --rm bats
