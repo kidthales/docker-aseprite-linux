@@ -11,10 +11,10 @@ readonly DALC_DEFAULT_GIT_REF_ASEPRITE=main
 readonly DALC_DEFAULT_BUILD_TYPE=RelWithDebInfo
 readonly DALC_DEFAULT_ENABLE_UI=ON
 
-DALC_GIT_REF_SKIA="${DALC_DEFAULT_GIT_REF_SKIA}"
-DALC_GIT_REF_ASEPRITE="${DALC_DEFAULT_GIT_REF_ASEPRITE}"
-DALC_BUILD_TYPE="${DALC_DEFAULT_BUILD_TYPE}"
-DALC_ENABLE_UI="${DALC_DEFAULT_ENABLE_UI}"
+DALC_GIT_REF_SKIA="${DALC_GIT_REF_SKIA:-${DALC_DEFAULT_GIT_REF_SKIA}}"
+DALC_GIT_REF_ASEPRITE="${DALC_GIT_REF_ASEPRITE:-${DALC_DEFAULT_GIT_REF_ASEPRITE}}"
+DALC_BUILD_TYPE="${DALC_BUILD_TYPE:-${DALC_DEFAULT_BUILD_TYPE}}"
+DALC_ENABLE_UI="${DALC_ENABLE_UI:-${DALC_DEFAULT_ENABLE_UI}}"
 
 DALC_GIT_URL_DEPOT_TOOLS="${DALC_GIT_URL_DEPOT_TOOLS:-https://chromium.googlesource.com/chromium/tools/depot_tools.git}"
 DALC_GIT_URL_SKIA="${DALC_GIT_URL_SKIA:-https://github.com/aseprite/skia.git}"
@@ -154,7 +154,20 @@ dalc_build_deps() {
 		git clone "${git_url_depot_tools}"
 	fi
 
-	# TODO
+	if [ -d "${path_deps_skia}" ]; then
+		local git_ref
+
+		cd "${path_deps_skia}"
+
+		git_ref="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
+
+		if [ "${git_ref}" != "${git_ref_skia}" ]; then
+			echo -e "\e[37mCleaning skia dependencies...\e[0m"
+			cd "${path_deps}"
+			rm -rf "${path_deps_skia}"
+		fi
+	fi
+
 	if [ ! -d "${path_deps_skia}" ]; then
 		git clone -b "${git_ref_skia}" "${git_url_skia}"
 	fi
@@ -187,7 +200,20 @@ dalc_build_aseprite() {
 	mkdir -p "${path_out}"
 	cd "${path_out}"
 
-	# TODO
+	if [ -d "${path_out_aseprite}" ]; then
+		local git_ref
+
+		cd "${path_out_aseprite}"
+
+		git_ref="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
+
+		if [ "${git_ref}" != "${git_ref_aseprite}" ]; then
+			echo -e "\e[37mCleaning Aseprite dependencies...\e[0m"
+			cd "${path_out}"
+			rm -rf "${path_out_aseprite}"
+		fi
+	fi
+
 	if [ ! -d "${path_out_aseprite}" ]; then
 		git clone -b "${git_ref_aseprite}" --recursive "${git_url_aseprite}"
 	fi
