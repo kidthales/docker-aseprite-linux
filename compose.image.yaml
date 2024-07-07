@@ -1,6 +1,6 @@
 services:
   # Extends service from compose.yaml.
   aseprite:
-    image: ${IMAGES_PREFIX:-}aseprite:${ASEPRITE_TAG:-latest}
+    image: ${IMAGES_PREFIX:-}aseprite:headless-${ASEPRITE_GIT_REF:-main}
     build:
       target: aseprite

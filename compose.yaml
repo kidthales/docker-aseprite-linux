@@ -1,12 +1,19 @@
 services:
   aseprite:
-    image: ${IMAGES_PREFIX:-}aseprite:compile-${ASEPRITE_COMPILE_TAG:-latest}
+    image: ${IMAGES_PREFIX:-}aseprite:compile
     build:
       context: .
       target: compile
       args:
         python_version: ${ASEPRITE_COMPILE_PYTHON_VERSION:-3.12.4-bookworm}
         timezone: ${ASEPRITE_COMPILE_TIMEZONE:-UTC}
+    environment:
+      # Takes precedence over hard-coded default values.
+      # Compile script cli options take precedence over these.
+      DALC_GIT_REF_SKIA: ${SKIA_GIT_REF:-}
+      DALC_GIT_REF_ASEPRITE: ${ASEPRITE_GIT_REF:-}
+      DALC_BUILD_TYPE: ${BUILD_TYPE:-}
+      DALC_ENABLE_UI: ${ENABLE_UI:-}
     volumes:
       - './output:/output:rw'
       - './dependencies:/dependencies:rw'
