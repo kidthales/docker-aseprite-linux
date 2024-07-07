@@ -155,13 +155,15 @@ dalc_build_deps() {
 	fi
 
 	if [ -d "${path_deps_skia}" ]; then
-		local git_ref
+		local tag_candidate branch_candidate short_candidate
 
 		cd "${path_deps_skia}"
 
-		git_ref="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
+		tag_candidate="$(git describe --tags --exact-match 2> /dev/null || echo '')"
+		branch_candidate="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
+		short_candidate="$(git rev-parse --short HEAD)"
 
-		if [ "${git_ref}" != "${git_ref_skia}" ]; then
+		if [ "${tag_candidate}" != "${git_ref_skia}" ] && [ "${branch_candidate}" != "${git_ref_skia}" ] && [ "${short_candidate}" != "${git_ref_skia}" ]; then
 			echo -e "\e[37mCleaning skia dependencies...\e[0m"
 			cd "${path_deps}"
 			rm -rf "${path_deps_skia}"
@@ -201,13 +203,15 @@ dalc_build_aseprite() {
 	cd "${path_out}"
 
 	if [ -d "${path_out_aseprite}" ]; then
-		local git_ref
+		local tag_candidate branch_candidate short_candidate
 
 		cd "${path_out_aseprite}"
 
-		git_ref="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
+		tag_candidate="$(git describe --tags --exact-match 2> /dev/null || echo '')"
+		branch_candidate="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
+		short_candidate="$(git rev-parse --short HEAD)"
 
-		if [ "${git_ref}" != "${git_ref_aseprite}" ]; then
+		if [ "${tag_candidate}" != "${git_ref_aseprite}" ] && [ "${branch_candidate}" != "${git_ref_aseprite}" ] && [ "${short_candidate}" != "${git_ref_aseprite}" ]; then
 			echo -e "\e[37mCleaning Aseprite dependencies...\e[0m"
 			cd "${path_out}"
 			rm -rf "${path_out_aseprite}"
