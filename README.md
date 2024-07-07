@@ -32,23 +32,25 @@ make image
 ## Usage
 
 ```text
- —— ⬜ 🐳 Docker Aseprite Linux Makefile 🐳 ⬜ —————————————————————————————————— 
+ —— ⬜ 🐳 Docker Aseprite Linux Makefile 🐳 ⬜ ——————————————————————————————————
 help                           Outputs this help screen.
-aseprite                       Compile Aseprite, pass the parameter "c=" to specify compilation options, example: make aseprite c='--git-ref-aseprite main' (TODO).
+help-aseprite                  Outputs compile-aseprite help screen.
+aseprite                       Compile Aseprite, pass the parameter "c=" to specify compilation options, example: make aseprite c='--git-ref-aseprite main'.
 image                          Build Aseprite image.
 clean                          Remove Aseprite build artifacts.
-dist-clean                     Remove Aseprite build artifacts & all build dependencies
+dist-clean                     Remove Aseprite build artifacts & all build dependencies.
 dist-clean-aseprite            Remove Aseprite build artifacts & project.
 dist-clean-depot               Remove depot_tools build dependency.
 dist-clean-skia                Remove skia build dependency.
 chown                          Fix file ownership issues on linux hosts.
+bats                           Run unit tests (TODO).
 ```
 
 ```text
 Compile Aseprite for Linux
 
 Usage:
-  compile-aseprite [-h|--help] | [--git-ref-skia <git-ref>] [--git-ref-aseprite <git-ref>] [--build-type <build-type>] [--headless]
+  /compile-aseprite [-h|--help] | [--git-ref-skia <git-ref>] [--git-ref-aseprite <git-ref>] [--build-type <build-type>] [--headless]
 
   -h, --help
     Outputs this help screen.
