@@ -32,7 +32,7 @@ dist-clean-depot: ## Remove depot_tools build dependency.
 	@$(DOCKER_COMP) run --rm bash rm -rf /project/dependencies/depot_tools
 
 dist-clean-skia: ## Remove skia build dependency.
-	@$(DOCKER_COMP) run --rm bash rm -rf -rf /project/dependencies/skia
+	@$(DOCKER_COMP) run --rm bash rm -rf /project/dependencies/skia
 
 bats: ## Run unit tests (TODO).
 	@$(DOCKER_COMP) run --rm bats

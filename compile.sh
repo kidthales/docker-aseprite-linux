@@ -182,7 +182,9 @@ dalc_build_deps() {
 	python3 tools/git-sync-deps
 
 	echo -e "\e[37mCompiling skia...\e[0m"
-	gn gen out/Release-x64 --args="is_debug=false is_official_build=true skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_sfntly=false skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false"
+	# TODO: g++ optional?
+	#gn gen out/Release-x64 --args="is_debug=false is_official_build=true skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_sfntly=false skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false"
+	gn gen out/Release-x64 --args='is_debug=false is_official_build=true skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_sfntly=false skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false cc="clang" cxx="clang++" extra_cflags_cc=["-stdlib=libc++"] extra_ldflags=["-stdlib=libc++"]'
 	ninja -C out/Release-x64 skia modules
 }
 
@@ -228,9 +230,14 @@ dalc_build_aseprite() {
 	cd build
 
 	echo -e "\e[37mCompiling Aseprite...\e[0m"
+	# TODO: g++ optional?
+	export CC=clang
+	export CXX=clang++
 	cmake \
 		-DCMAKE_BUILD_TYPE="${build_type}" \
 		-DENABLE_UI="${enable_ui}" \
+		-DCMAKE_CXX_FLAGS:STRING=-stdlib=libc++ \
+		-DCMAKE_EXE_LINKER_FLAGS:STRING=-stdlib=libc++ \
 		-DLAF_BACKEND=skia \
 		-DSKIA_DIR="${path_deps_skia}" \
 		-DSKIA_LIBRARY_DIR="${path_deps_skia}/out/Release-x64" \

@@ -86,8 +86,6 @@ BUILD_TYPE=Debug
 ENABLE_UI=OFF
 ```
 
-> TODO
-
 ## Acknowledgments
 
 - Forked from [nilsve/docker-aseprite-linux](https://github.com/nilsve/docker-aseprite-linux).
