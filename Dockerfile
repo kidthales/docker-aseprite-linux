@@ -14,10 +14,13 @@ RUN ln -snf /usr/share/zoneinfo/${timezone} /etc/localtime && echo ${timezone} >
 
 # Install dependencies.
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
-	build-essential \
+	clang \
 	cmake \
 	curl \
+	g++ \
 	git \
+	libc++-dev \
+	libc++abi-dev \
 	libfontconfig1-dev \
 	libgl1-mesa-dev \
 	libx11-dev \
@@ -47,18 +50,20 @@ RUN ln -s /opt/aseprite/bin/aseprite /usr/local/bin/aseprite && ln -s /opt/asepr
 
 # Install dependencies.
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
+	libc++1-16 \
 	libfontconfig1 \
 	libgl1 \
+    libsm6 \
 	libssl3 \
 	libxcursor1 \
 	&& rm -rf /var/lib/apt/lists/*
 
-# Smoke test.
-RUN aseprite --help
-
 COPY --link --chmod=755 entrypoint.sh /docker-aseprite-entrypoint
 
 RUN ln -s /docker-aseprite-entrypoint /usr/local/bin/docker-aseprite-entrypoint
+
+# Smoke test.
+RUN /docker-aseprite-entrypoint --help
 
 ENTRYPOINT ["docker-aseprite-entrypoint"]
 
