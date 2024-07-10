@@ -1,15 +1,24 @@
-# Docker Aseprite Container (opinionated)
+# Docker Aseprite Linux
 
-This repository allows you to compile Aseprite without installing any build tools.
+This repository allows you to compile Aseprite with Make & Docker Compose; it is a fork
+of [nilsve/docker-aseprite-linux](https://github.com/nilsve/docker-aseprite-linux) with some inspiration taken from
+things I like in [dunglas/symfony-docker](https://github.com/dunglas/symfony-docker).
 
----
+> I was originally interested in automating Aseprite exports as part of my indie game dev 'stack'; I may have gotten
+> carried away here! 😅
 
-> ⚠️ Warning: [upstream repository](https://github.com/nilsve/docker-aseprite-linux) does not declare an explicit
-> license thus we must default
-> to [License: No Permission](https://choosealicense.com/no-permission/).
->    - Why work on this? [Ethical imperative](https://en.wikipedia.org/wiki/Hacker_ethic).
+## Features
 
----
+- A flexible docker compose driven compile script capable of:
+    - Building Aseprite with clang (default) or g++.
+    - Specifying build type (RelWithDebInfo, Debug, etc.).
+    - Specifying alternate git branches, tags, & hashes for Aseprite & Skia build sources.
+    - (Mostly) automated handling of dependencies & build outputs across differing build runs.
+    - Easily creating headless builds.
+- A Makefile fronted with helpful targets for:
+    - Compiling Aseprite for a Linux host.
+    - Creating a docker image with a headless Aseprite build (maybe useful for exporting in some kind of CI setup?).
+    - Cleaning & removing builds & dependencies.
 
 ## Requirements
 
@@ -76,10 +85,10 @@ Usage:
 
 By default, clang is used to build all dependencies along with Aseprite; Builds with g++ are also supported.
 
-> IMPORTANT: When switching toolchains, make sure to run `make clean` between compilation runs.
-
 > Builds with clang are recommended in the Aseprite project documents; anecdotally, these builds also result in smaller
 > headless image sizes when compared to g++ builds.
+
+> IMPORTANT: When switching toolchains, make sure to run `make clean` between compilation runs.
 
 ### `.env`
 
@@ -97,7 +106,35 @@ BUILD_TYPE=Debug
 COMPILER_CHAIN=g++
 ```
 
-## Acknowledgments
+### FAQ
 
-- Forked from [nilsve/docker-aseprite-linux](https://github.com/nilsve/docker-aseprite-linux).
-- Docker & Docker Compose structure inspired by [dunglas/symfony-docker](https://github.com/dunglas/symfony-docker).
+Please refer to the upstream project's [FAQ](https://github.com/nilsve/docker-aseprite-linux/blob/master/README.md#faq)
+for hints.
+
+## License
+
+MIT License
+
+Copyright (c) 2021-2024 nilsve & contributors (the upstream project nilsve/docker-aseprite-linux)
+
+Copyright (c) 2017-2024 Kévin Dunglas & contributors (any inspired elements from dunglas/symfony-docker)
+
+Copyright (c) 2024 Tristan Bonsor
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
