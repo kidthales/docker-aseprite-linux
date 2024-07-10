@@ -43,14 +43,13 @@ dist-clean                     Remove Aseprite build artifacts & all build depen
 dist-clean-aseprite            Remove Aseprite build artifacts & project.
 dist-clean-depot               Remove depot_tools build dependency.
 dist-clean-skia                Remove skia build dependency.
-bats                           Run unit tests (TODO).
 ```
 
 ```text
 Compile Aseprite for Linux
 
 Usage:
-  /compile-aseprite [-h|--help] | [--git-ref-skia <git-ref>] [--git-ref-aseprite <git-ref>] [--build-type <build-type>] [--headless]
+  /compile-aseprite [-h|--help] | [--git-ref-skia <git-ref>] [--git-ref-aseprite <git-ref>] [--build-type <build-type>] [--headless] [--with-g++]
 
   -h, --help
     Outputs this help screen.
@@ -65,10 +64,22 @@ Usage:
     The value used for -DCMAKE_BUILD_TYPE. Defaults to RelWithDebInfo.
 
   --headless
-    Sets value used for -DENABLE_UI to OFF. Defaults to ON.
+    Sets value used for -DENABLE_UI to OFF. Defaults is ON.
+
+  --with-g++
+      Use the g++ compiler toolchain. Default is clang.
 ```
 
 ## Additional Information
+
+### Compilation Toolchain
+
+By default, clang is used to build all dependencies along with Aseprite; Builds with g++ are also supported.
+
+> IMPORTANT: When switching toolchains, make sure to run `make clean` between compilation runs.
+
+> Builds with clang are recommended in the Aseprite project documents; anecdotally, these builds also result in smaller
+> headless image sizes when compared to g++ builds.
 
 ### `.env`
 
@@ -83,7 +94,7 @@ ASEPRITE_COMPILE_PYTHON_VERSION=3.11-bookworm
 ASEPRITE_COMPILE_TIMEZONE=Canada/Pacific
 SKIA_GIT_REF=aseprite-m121
 BUILD_TYPE=Debug
-ENABLE_UI=OFF
+COMPILER_CHAIN=g++
 ```
 
 ## Acknowledgments
