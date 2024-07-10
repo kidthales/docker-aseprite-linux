@@ -6,7 +6,7 @@ RUN_BASH = $(DOCKER_COMP) run --rm bash
 
 # Misc
 .DEFAULT_GOAL = help
-.PHONY        : help help-aseprite aseprite image clean dist-clean dist-clean-aseprite dist-clean-depot dist-clean-skia bats
+.PHONY        : help help-aseprite aseprite image clean dist-clean dist-clean-aseprite dist-clean-depot dist-clean-skia
 
 ## —— ⬜ 🐳 Docker Aseprite Linux Makefile 🐳 ⬜ ——————————————————————————————————
 help: ## Outputs this help screen.
@@ -36,6 +36,3 @@ dist-clean-depot: ## Remove depot_tools build dependency.
 
 dist-clean-skia: ## Remove skia build dependency.
 	@$(RUN_BASH) rm -rf /project/dependencies/skia
-
-bats: ## Run unit tests (TODO).
-	@$(DOCKER_COMP) run --rm bats
