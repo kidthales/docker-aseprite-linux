@@ -15,7 +15,7 @@ things I like in [dunglas/symfony-docker](https://github.com/dunglas/symfony-doc
     - Specifying alternate git branches, tags, & hashes for Aseprite & Skia build sources.
     - (Mostly) automated handling of dependencies & build outputs across differing build runs.
     - Easily creating headless builds.
-- A Makefile fronted with helpful targets for:
+- A Makefile frontend with helpful targets for:
     - Compiling Aseprite for a Linux host.
     - Creating a docker image with a headless Aseprite build (maybe useful for exporting in some kind of CI setup?).
     - Cleaning & removing builds & dependencies.
@@ -96,13 +96,10 @@ Use a git ignored [.env file](https://docs.docker.com/compose/environment-variab
 override compilation defaults and image naming.
 
 ```dotenv
-# Example .env file.
-IMAGES_PREFIX=my-vendor/
-ASEPRITE_GIT_REF=v1.3.7
-ASEPRITE_COMPILE_PYTHON_VERSION=3.11-bookworm
+# Example .env file for g++ based build with UI.
+IMAGES_PREFIX=kidthales/
+ASEPRITE_GIT_REF=v1.3.8.1
 ASEPRITE_COMPILE_TIMEZONE=Canada/Pacific
-SKIA_GIT_REF=aseprite-m121
-BUILD_TYPE=Debug
 COMPILER_CHAIN=g++
 ```
 
