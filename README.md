@@ -64,7 +64,7 @@ Usage:
     Outputs this help screen.
 
   --git-ref-skia <git-ref>
-    The git-ref to use when cloning https://github.com/aseprite/skia.git. Defaults to aseprite-m102.
+    The git-ref to use when cloning https://github.com/aseprite/skia.git. Defaults to aseprite-m124.
 
   --git-ref-aseprite <git-ref>
     The git-ref to use when cloning https://github.com/aseprite/aseprite.git. Defaults to main.
@@ -73,7 +73,7 @@ Usage:
     The value used for -DCMAKE_BUILD_TYPE. Defaults to RelWithDebInfo.
 
   --headless
-    Sets value used for -DENABLE_UI to OFF. Defaults is ON.
+    Sets value used for -DENABLE_UI to OFF. Default is ON.
 
   --with-g++
       Use the g++ compiler toolchain. Default is clang.
@@ -96,11 +96,11 @@ Use a git ignored [.env file](https://docs.docker.com/compose/environment-variab
 override compilation defaults and image naming.
 
 ```dotenv
-# Example .env file for g++ based build with UI.
+# Example .env file for aseprite with version less than 1.3.14.
 IMAGES_PREFIX=kidthales/
+SKIA_GIT_REF=aseprite-m102
 ASEPRITE_GIT_REF=v1.3.8.1
 ASEPRITE_COMPILE_TIMEZONE=Canada/Pacific
-COMPILER_CHAIN=g++
 ```
 
 ### FAQ
