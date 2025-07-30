@@ -190,6 +190,12 @@ dalc_build_deps() {
 
 	export PATH="${path_deps_depot_tools}:${PATH}"
 
+	# Fix for error:
+	# python3_bin_reldir.txt not found. need to initialize depot_tools by
+	# running gclient, update_depot_tools or ensure_bootstrap.
+	cd "${path_deps_depot_tools}"
+	./update_depot_tools
+
 	cd "${path_deps_skia}"
 
 	echo -e "\e[37mSyncing skia dependencies...\e[0m"
