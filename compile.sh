@@ -6,7 +6,7 @@ set -o noclobber
 set -o nounset
 #set -o xtrace
 
-readonly DALC_DEFAULT_GIT_REF_SKIA=aseprite-m102
+readonly DALC_DEFAULT_GIT_REF_SKIA=aseprite-m124
 readonly DALC_DEFAULT_GIT_REF_ASEPRITE=main
 readonly DALC_DEFAULT_BUILD_TYPE=RelWithDebInfo
 readonly DALC_DEFAULT_ENABLE_UI=ON
@@ -33,7 +33,7 @@ declare -A DALC_OPT_HELP=([DESC]='Outputs this help screen.' [LONG]=help [SHORT]
 declare -A DALC_OPT_GIT_REF_SKIA=([DESC]="The git-ref to use when cloning ${DALC_GIT_URL_SKIA}. Defaults to ${DALC_DEFAULT_GIT_REF_SKIA}." [LONG]=git-ref-skia)
 declare -A DALC_OPT_GIT_REF_ASEPRITE=([DESC]="The git-ref to use when cloning ${DALC_GIT_URL_ASEPRITE}. Defaults to ${DALC_DEFAULT_GIT_REF_ASEPRITE}." [LONG]=git-ref-aseprite)
 declare -A DALC_OPT_BUILD_TYPE=([DESC]="The value used for -DCMAKE_BUILD_TYPE. Defaults to ${DALC_DEFAULT_BUILD_TYPE}." [LONG]=build-type)
-declare -A DALC_OPT_HEADLESS=([DESC]="Sets value used for -DENABLE_UI to OFF. Defaults is ${DALC_DEFAULT_ENABLE_UI}." [LONG]=headless)
+declare -A DALC_OPT_HEADLESS=([DESC]="Sets value used for -DENABLE_UI to OFF. Default is ${DALC_DEFAULT_ENABLE_UI}." [LONG]=headless)
 declare -A DALC_OPT_WITH_GPP=([DESC]="Use the g++ compiler toolchain. Default is ${DALC_DEFAULT_COMPILER_CHAIN}." [LONG]=with-g++)
 
 dalc_main() {
