@@ -45,6 +45,7 @@ jobs:
             compose.yaml
             compose.image.yaml
           no-cache: true
+          source: .
         env:
           ASEPRITE_GIT_REF: ${{ github.event.inputs.git-ref-aseprite }}
           IMAGES_PREFIX: 'ghcr.io/${{ github.repository_owner }}/'
