@@ -7,6 +7,9 @@ on:
         required: true
         description: The desired git ref to build Aseprite from
         default: main
+  schedule:
+    # UTC
+    - cron: '20 4 * * *'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.inputs.git-ref-aseprite || github.ref_name }}
@@ -47,5 +50,5 @@ jobs:
           no-cache: true
           source: .
         env:
-          ASEPRITE_GIT_REF: ${{ github.event.inputs.git-ref-aseprite }}
+          ASEPRITE_GIT_REF: ${{ github.event.inputs.git-ref-aseprite || 'main' }}
           IMAGES_PREFIX: 'ghcr.io/${{ github.repository_owner }}/'
