@@ -7,6 +7,7 @@ on:
         required: true
         description: The desired git ref to build Aseprite from
         default: main
+
   schedule:
     # UTC
     - cron: '20 4 * * *'
