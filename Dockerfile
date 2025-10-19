@@ -27,7 +27,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
 	libxcursor-dev \
 	libxi-dev \
 	ninja-build \
-	unzip
+	unzip \
+	x11-xserver-utils
 
 COPY --link --chmod=755 compile.sh /compile-aseprite
 
