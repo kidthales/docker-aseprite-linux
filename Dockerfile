@@ -26,6 +26,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
 	libx11-dev \
 	libxcursor-dev \
 	libxi-dev \
+	libxrandr-dev \
 	ninja-build \
 	unzip
 
@@ -56,6 +57,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     libsm6 \
 	libssl3 \
 	libxcursor1 \
+	libxrandr2 \
 	&& rm -rf /var/lib/apt/lists/*
 
 COPY --link --chmod=755 entrypoint.sh /docker-aseprite-entrypoint
