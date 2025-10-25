@@ -39,7 +39,7 @@ WORKDIR /output
 
 ENTRYPOINT ["/compile-aseprite"]
 
-FROM debian:bookworm-slim as aseprite
+FROM debian:trixie-slim as aseprite
 
 # Assumes compiled output exists on host; see compile stage.
 COPY output/aseprite/build/bin /opt/aseprite/bin
