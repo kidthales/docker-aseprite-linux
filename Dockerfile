@@ -39,7 +39,7 @@ WORKDIR /output
 
 ENTRYPOINT ["/compile-aseprite"]
 
-FROM debian:bookworm-slim as aseprite
+FROM debian:trixie-slim as aseprite
 
 # Assumes compiled output exists on host; see compile stage.
 COPY output/aseprite/build/bin /opt/aseprite/bin
@@ -51,10 +51,11 @@ RUN ln -s /opt/aseprite/bin/aseprite /usr/local/bin/aseprite && ln -s /opt/asepr
 
 # Install dependencies.
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
-	libc++1-16 \
+	libc++1-17t64 \
 	libfontconfig1 \
 	libgl1 \
-    libsm6 \
+	libldap2 \
+	libsm6 \
 	libssl3 \
 	libxcursor1 \
 	libxrandr2 \

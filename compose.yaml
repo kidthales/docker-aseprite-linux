@@ -5,7 +5,7 @@ services:
       context: .
       target: compile
       args:
-        python_version: ${ASEPRITE_COMPILE_PYTHON_VERSION:-3.12.5-bookworm}
+        python_version: ${ASEPRITE_COMPILE_PYTHON_VERSION:-3.12.12-trixie}
         timezone: ${ASEPRITE_COMPILE_TIMEZONE:-UTC}
     environment:
       # Takes precedence over hard-coded default values.
