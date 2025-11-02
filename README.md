@@ -1,5 +1,8 @@
 # Docker Aseprite Linux
 
+> [!CAUTION]
+> https://github.com/kidthales/docker-aseprite-linux/issues/25
+
 This repository allows you to compile Aseprite with Make & Docker Compose; it is a fork
 of [nilsve/docker-aseprite-linux](https://github.com/nilsve/docker-aseprite-linux) with some inspiration taken from
 things I like in [dunglas/symfony-docker](https://github.com/dunglas/symfony-docker).
