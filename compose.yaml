@@ -13,7 +13,6 @@ services:
       DALC_GIT_REF_SKIA: ${SKIA_GIT_REF:-}
       DALC_GIT_REF_ASEPRITE: ${ASEPRITE_GIT_REF:-}
       DALC_BUILD_TYPE: ${BUILD_TYPE:-}
-      DALC_ENABLE_UI: ${ENABLE_UI:-}
       DALC_COMPILER_CHAIN: ${COMPILER_CHAIN:-}
     volumes:
       - './output:/output:rw'

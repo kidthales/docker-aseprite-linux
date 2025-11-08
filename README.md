@@ -75,9 +75,6 @@ Usage:
   --build-type <build-type>
     The value used for -DCMAKE_BUILD_TYPE. Defaults to RelWithDebInfo.
 
-  --headless
-    Sets value used for -DENABLE_UI to OFF. Default is ON.
-
   --with-g++
       Use the g++ compiler toolchain. Default is clang.
 ```
@@ -87,9 +84,6 @@ Usage:
 ### Compilation Toolchain
 
 By default, clang is used to build all dependencies along with Aseprite; Builds with g++ are also supported.
-
-> Builds with clang are recommended in the Aseprite project documents; anecdotally, these builds also result in smaller
-> headless image sizes when compared to g++ builds.
 
 > IMPORTANT: When switching toolchains, make sure to run `make clean` between compilation runs.
 
