@@ -6,7 +6,7 @@ RUN_BASH = $(DOCKER_COMP) run --rm bash
 
 # Misc
 .DEFAULT_GOAL = help
-.PHONY        : help help-aseprite aseprite image clean dist-clean dist-clean-aseprite dist-clean-depot dist-clean-skia
+.PHONY        : help help-aseprite aseprite image clean dist-clean
 
 ## —— ⬜ 🐳 Docker Aseprite Linux Makefile 🐳 ⬜ ——————————————————————————————————
 help: ## Outputs this help screen.
@@ -20,21 +20,11 @@ aseprite: ## Compile Aseprite, pass the parameter "c=" to specify compilation op
 	@$(DOCKER_COMP) run --build --rm aseprite $(c)
 
 image: ## Build Aseprite image (headless).
-image: c=--laf-backend none
 image: aseprite
 	@$(DOCKER_COMP) -f compose.yaml -f compose.image.yaml build aseprite
 
 clean: ## Remove Aseprite build artifacts.
 	@$(RUN_BASH) rm -rf /project/output/aseprite/build
 
-dist-clean: ## Remove Aseprite build artifacts & all build dependencies.
-dist-clean: dist-clean-aseprite dist-clean-depot dist-clean-skia
-
-dist-clean-aseprite: ## Remove Aseprite build artifacts & project.
+dist-clean: ## Remove Aseprite build artifacts & project.
 	@$(RUN_BASH) rm -rf /project/output/aseprite
-
-dist-clean-depot: ## Remove depot_tools build dependency.
-	@$(RUN_BASH) rm -rf /project/dependencies/depot_tools
-
-dist-clean-skia: ## Remove skia build dependency.
-	@$(RUN_BASH) rm -rf /project/dependencies/skia
