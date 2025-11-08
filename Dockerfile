@@ -2,15 +2,9 @@
 
 # The different stages of this Dockerfile are meant to be built into separate images.
 # https://docs.docker.com/develop/develop-images/multistage-build/#stop-at-a-specific-build-stage
-# https://docs.docker.com/compose/compose-file/#target
+# https://docs.docker.com/build/bake/reference/#targettarget
 
-ARG python_version
-
-FROM python:${python_version} as compile
-
-# Required for tzdata.
-ARG timezone
-RUN ln -snf /usr/share/zoneinfo/${timezone} /etc/localtime && echo ${timezone} > /etc/timezone
+FROM builder-upstream AS builder
 
 # Install dependencies.
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
@@ -30,20 +24,24 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
 	ninja-build \
 	unzip
 
-COPY --link --chmod=755 compile.sh /compile-aseprite
+ARG aseprite_git_ref=main
+ARG aseprite_build_type=RelWithDebInfo
 
-VOLUME /output
+RUN git clone -b "${aseprite_git_ref}" --recursive https://github.com/aseprite/aseprite.git /opt/aseprite; \
+	mkdir -p /opt/aseprite/build
 
-WORKDIR /output
+RUN	cd /opt/aseprite/build && export CC=clang && export CXX=clang++ && cmake \
+	-DCMAKE_BUILD_TYPE="${aseprite_build_type}" \
+	-DCMAKE_CXX_FLAGS:STRING=-stdlib=libc++ \
+	-DCMAKE_EXE_LINKER_FLAGS:STRING=-stdlib=libc++ \
+	-DLAF_BACKEND=none \
+	-G Ninja \
+	.. \
+	&& ninja aseprite
 
-ENTRYPOINT ["/compile-aseprite"]
+FROM app-upstream AS app
 
-FROM debian:trixie-slim as aseprite
-
-# Assumes compiled output exists on host; see compile stage.
-COPY output/aseprite/build/bin /opt/aseprite/bin
-
-WORKDIR /tmp
+COPY --from=builder /opt/aseprite/build/bin /opt/aseprite/bin
 
 # Ensure binary is found in $PATH.
 RUN ln -s /opt/aseprite/bin/aseprite /usr/local/bin/aseprite && ln -s /opt/aseprite/bin/aseprite /usr/local/bin/ase
