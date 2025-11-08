@@ -1,14 +1,18 @@
 # Docker Aseprite Linux
 
-> [!CAUTION]
-> https://github.com/kidthales/docker-aseprite-linux/issues/25
-
 This repository allows you to compile Aseprite with Make & Docker Compose; it is a fork
 of [nilsve/docker-aseprite-linux](https://github.com/nilsve/docker-aseprite-linux) with some inspiration taken from
 things I like in [dunglas/symfony-docker](https://github.com/dunglas/symfony-docker).
 
 > I was originally interested in automating Aseprite exports as part of my indie game dev 'stack'; I may have gotten
 > carried away here! 😅
+
+> [!WARNING]  
+> Supports Aseprite v1.3.15+ builds for Debian Trixie systems.
+
+> [!NOTE]  
+> I intend to refactor this project to focus on containerized headless Aseprite builds suitable for automated batch tasks. Project will be right-sized for this purpose (remove build options, etc.).
+
 
 ## Features
 
@@ -17,7 +21,7 @@ things I like in [dunglas/symfony-docker](https://github.com/dunglas/symfony-doc
     - Specifying build type (RelWithDebInfo, Debug, etc.).
     - Specifying alternate git branches, tags, & hashes for Aseprite & Skia build sources.
     - (Mostly) automated handling of dependencies & build outputs across differing build runs.
-    - Easily creating headless builds.
+    - Easily create headless builds.
 - A Makefile frontend with helpful targets for:
     - Compiling Aseprite for a Linux host.
     - Creating a docker image with a headless Aseprite build (maybe useful for exporting in some kind of CI setup?).
@@ -48,7 +52,7 @@ make image
  —— ⬜ 🐳 Docker Aseprite Linux Makefile 🐳 ⬜ ——————————————————————————————————
 help                           Outputs this help screen.
 help-aseprite                  Outputs compile-aseprite help screen.
-aseprite                       Compile Aseprite, pass the parameter "c=" to specify compilation options, example: make aseprite c='--git-ref-aseprite v1.2.40'.
+aseprite                       Compile Aseprite, pass the parameter "c=" to specify compilation options, example: make aseprite c='--git-ref-aseprite v1.3.9'.
 image                          Build Aseprite image (headless).
 clean                          Remove Aseprite build artifacts.
 dist-clean                     Remove Aseprite build artifacts & all build dependencies.
@@ -61,10 +65,13 @@ dist-clean-skia                Remove skia build dependency.
 Compile Aseprite for Linux
 
 Usage:
-  /compile-aseprite [-h|--help] | [--git-ref-skia <git-ref>] [--git-ref-aseprite <git-ref>] [--build-type <build-type>] [--headless] [--with-g++]
+  /compile-aseprite [-h|--help] | [--laf-backend <backend>] [--git-ref-skia <git-ref>] [--git-ref-aseprite <git-ref>] [--build-type <build-type>]  [--with-g++]
 
   -h, --help
     Outputs this help screen.
+
+  --laf-backend <backend>
+    The graphics backend to use; for 'headless' builds, specify none. Defaults to skia.
 
   --git-ref-skia <git-ref>
     The git-ref to use when cloning https://github.com/aseprite/skia.git. Defaults to aseprite-m124.
@@ -74,9 +81,6 @@ Usage:
 
   --build-type <build-type>
     The value used for -DCMAKE_BUILD_TYPE. Defaults to RelWithDebInfo.
-
-  --headless
-    Sets value used for -DENABLE_UI to OFF. Default is ON.
 
   --with-g++
       Use the g++ compiler toolchain. Default is clang.
@@ -88,9 +92,6 @@ Usage:
 
 By default, clang is used to build all dependencies along with Aseprite; Builds with g++ are also supported.
 
-> Builds with clang are recommended in the Aseprite project documents; anecdotally, these builds also result in smaller
-> headless image sizes when compared to g++ builds.
-
 > IMPORTANT: When switching toolchains, make sure to run `make clean` between compilation runs.
 
 ### `.env`
@@ -99,10 +100,8 @@ Use a git ignored [.env file](https://docs.docker.com/compose/environment-variab
 override compilation defaults and image naming.
 
 ```dotenv
-# Example .env file for aseprite with version less than 1.3.14.
 IMAGES_PREFIX=kidthales/
-SKIA_GIT_REF=aseprite-m102
-ASEPRITE_GIT_REF=v1.3.8.1
+ASEPRITE_GIT_REF=v1.3.15
 ASEPRITE_COMPILE_TIMEZONE=Canada/Pacific
 ```
 

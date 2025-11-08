@@ -15,18 +15,20 @@ help: ## Outputs this help screen.
 help-aseprite: ## Outputs compile-aseprite help screen.
 	@$(RUN_BASH) bash /project/compile.sh --help
 
-aseprite: ## Compile Aseprite, pass the parameter "c=" to specify compilation options, example: make aseprite c='--git-ref-aseprite v1.2.40'.
+aseprite: ## Compile Aseprite, pass the parameter "c=" to specify compilation options, example: make aseprite c='--git-ref-aseprite v1.3.9'.
 	@$(eval c ?=)
 	@$(DOCKER_COMP) run --build --rm aseprite $(c)
 
 image: ## Build Aseprite image (headless).
-	@$(MAKE) aseprite c='--headless'
+image: c=--laf-backend none
+image: aseprite
 	@$(DOCKER_COMP) -f compose.yaml -f compose.image.yaml build aseprite
 
 clean: ## Remove Aseprite build artifacts.
 	@$(RUN_BASH) rm -rf /project/output/aseprite/build
 
-dist-clean: dist-clean-aseprite dist-clean-depot dist-clean-skia ## Remove Aseprite build artifacts & all build dependencies.
+dist-clean: ## Remove Aseprite build artifacts & all build dependencies.
+dist-clean: dist-clean-aseprite dist-clean-depot dist-clean-skia
 
 dist-clean-aseprite: ## Remove Aseprite build artifacts & project.
 	@$(RUN_BASH) rm -rf /project/output/aseprite

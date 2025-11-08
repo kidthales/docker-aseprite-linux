@@ -6,16 +6,16 @@ set -o noclobber
 set -o nounset
 #set -o xtrace
 
+readonly DALC_DEFAULT_LAF_BACKEND=skia
 readonly DALC_DEFAULT_GIT_REF_SKIA=aseprite-m124
 readonly DALC_DEFAULT_GIT_REF_ASEPRITE=main
 readonly DALC_DEFAULT_BUILD_TYPE=RelWithDebInfo
-readonly DALC_DEFAULT_ENABLE_UI=ON
 readonly DALC_DEFAULT_COMPILER_CHAIN=clang
 
+DALC_LAF_BACKEND="${DALC_LAF_BACKEND:-${DALC_DEFAULT_LAF_BACKEND}}"
 DALC_GIT_REF_SKIA="${DALC_GIT_REF_SKIA:-${DALC_DEFAULT_GIT_REF_SKIA}}"
 DALC_GIT_REF_ASEPRITE="${DALC_GIT_REF_ASEPRITE:-${DALC_DEFAULT_GIT_REF_ASEPRITE}}"
 DALC_BUILD_TYPE="${DALC_BUILD_TYPE:-${DALC_DEFAULT_BUILD_TYPE}}"
-DALC_ENABLE_UI="${DALC_ENABLE_UI:-${DALC_DEFAULT_ENABLE_UI}}"
 DALC_COMPILER_CHAIN="${DALC_COMPILER_CHAIN:-${DALC_DEFAULT_COMPILER_CHAIN}}"
 
 DALC_GIT_URL_DEPOT_TOOLS="${DALC_GIT_URL_DEPOT_TOOLS:-https://chromium.googlesource.com/chromium/tools/depot_tools.git}"
@@ -30,10 +30,10 @@ DALC_PATH_OUT="${DALC_PATH_OUT:-/output}"
 readonly DALC_PATH_OUT_ASEPRITE="${DALC_PATH_OUT}/aseprite"
 
 declare -A DALC_OPT_HELP=([DESC]='Outputs this help screen.' [LONG]=help [SHORT]=h)
+declare -A DALC_OPT_LAF_BACKEND=([DESC]="The graphics backend to use; for 'headless' builds, specify none. Defaults to ${DALC_DEFAULT_LAF_BACKEND}." [LONG]=laf-backend)
 declare -A DALC_OPT_GIT_REF_SKIA=([DESC]="The git-ref to use when cloning ${DALC_GIT_URL_SKIA}. Defaults to ${DALC_DEFAULT_GIT_REF_SKIA}." [LONG]=git-ref-skia)
 declare -A DALC_OPT_GIT_REF_ASEPRITE=([DESC]="The git-ref to use when cloning ${DALC_GIT_URL_ASEPRITE}. Defaults to ${DALC_DEFAULT_GIT_REF_ASEPRITE}." [LONG]=git-ref-aseprite)
 declare -A DALC_OPT_BUILD_TYPE=([DESC]="The value used for -DCMAKE_BUILD_TYPE. Defaults to ${DALC_DEFAULT_BUILD_TYPE}." [LONG]=build-type)
-declare -A DALC_OPT_HEADLESS=([DESC]="Sets value used for -DENABLE_UI to OFF. Default is ${DALC_DEFAULT_ENABLE_UI}." [LONG]=headless)
 declare -A DALC_OPT_WITH_GPP=([DESC]="Use the g++ compiler toolchain. Default is ${DALC_DEFAULT_COMPILER_CHAIN}." [LONG]=with-g++)
 
 dalc_main() {
@@ -43,14 +43,16 @@ dalc_main() {
 
 	dalc_parse_args "$@"
 
-	dalc_build_deps \
-		"${DALC_PATH_DEPS}" \
-		"${DALC_PATH_DEPS_DEPOT_TOOLS}" \
-		"${DALC_GIT_URL_DEPOT_TOOLS}" \
-		"${DALC_PATH_DEPS_SKIA}" \
-		"${DALC_GIT_URL_SKIA}" \
-		"${DALC_GIT_REF_SKIA}" \
-		"${DALC_COMPILER_CHAIN}"
+	if [ "${DALC_LAF_BACKEND}" = skia ]; then
+		dalc_build_deps \
+			"${DALC_PATH_DEPS}" \
+			"${DALC_PATH_DEPS_DEPOT_TOOLS}" \
+			"${DALC_GIT_URL_DEPOT_TOOLS}" \
+			"${DALC_PATH_DEPS_SKIA}" \
+			"${DALC_GIT_URL_SKIA}" \
+			"${DALC_GIT_REF_SKIA}" \
+			"${DALC_COMPILER_CHAIN}"
+	fi
 
 	dalc_build_aseprite \
 		"${DALC_PATH_OUT}" \
@@ -58,9 +60,9 @@ dalc_main() {
 		"${DALC_GIT_URL_ASEPRITE}" \
 		"${DALC_GIT_REF_ASEPRITE}" \
 		"${DALC_BUILD_TYPE}" \
-		"${DALC_ENABLE_UI}" \
 		"${DALC_PATH_DEPS_SKIA}" \
-		"${DALC_COMPILER_CHAIN}"
+		"${DALC_COMPILER_CHAIN}" \
+		"${DALC_LAF_BACKEND}"
 
 	end="$(date +%s)"
 
@@ -70,7 +72,7 @@ dalc_main() {
 
 dalc_parse_args() {
 	local opts="${DALC_OPT_HELP[SHORT]}"
-	local longopts="${DALC_OPT_HELP[LONG]},${DALC_OPT_GIT_REF_SKIA[LONG]}:,${DALC_OPT_GIT_REF_ASEPRITE[LONG]}:,${DALC_OPT_BUILD_TYPE[LONG]}:,${DALC_OPT_HEADLESS[LONG]},${DALC_OPT_WITH_GPP[LONG]}"
+	local longopts="${DALC_OPT_HELP[LONG]},${DALC_OPT_LAF_BACKEND[LONG]}:,${DALC_OPT_GIT_REF_SKIA[LONG]}:,${DALC_OPT_GIT_REF_ASEPRITE[LONG]}:,${DALC_OPT_BUILD_TYPE[LONG]}:,${DALC_OPT_WITH_GPP[LONG]}"
 
 	! PARSED=$(getopt --options="$opts" --longoptions="$longopts" --name "$0" -- "$@")
 
@@ -90,6 +92,10 @@ dalc_parse_args() {
 				dalc_print_usage
 				exit 0
 			;;
+			"--${DALC_OPT_LAF_BACKEND[LONG]}")
+				DALC_LAF_BACKEND="$2"
+				shift 2
+			;;
 			"--${DALC_OPT_GIT_REF_SKIA[LONG]}")
 				DALC_GIT_REF_SKIA="$2"
 				shift 2
@@ -101,10 +107,6 @@ dalc_parse_args() {
 			"--${DALC_OPT_BUILD_TYPE[LONG]}")
 				DALC_BUILD_TYPE="$2"
 				shift 2
-			;;
-			"--${DALC_OPT_HEADLESS[LONG]}")
-				DALC_ENABLE_UI=OFF
-				shift 1
 			;;
 			"--${DALC_OPT_WITH_GPP[LONG]}")
 				DALC_COMPILER_CHAIN=g++
@@ -125,10 +127,13 @@ dalc_parse_args() {
 dalc_print_usage() {
 	cat <<EOF
 Usage:
-  $0 [-${DALC_OPT_HELP[SHORT]}|--${DALC_OPT_HELP[LONG]}] | [--${DALC_OPT_GIT_REF_SKIA[LONG]} <git-ref>] [--${DALC_OPT_GIT_REF_ASEPRITE[LONG]} <git-ref>] [--${DALC_OPT_BUILD_TYPE[LONG]} <build-type>] [--${DALC_OPT_HEADLESS[LONG]}] [--${DALC_OPT_WITH_GPP[LONG]}]
+  $0 [-${DALC_OPT_HELP[SHORT]}|--${DALC_OPT_HELP[LONG]}] | [--${DALC_OPT_LAF_BACKEND[LONG]} <backend>] [--${DALC_OPT_GIT_REF_SKIA[LONG]} <git-ref>] [--${DALC_OPT_GIT_REF_ASEPRITE[LONG]} <git-ref>] [--${DALC_OPT_BUILD_TYPE[LONG]} <build-type>] [--${DALC_OPT_WITH_GPP[LONG]}]
 
   -${DALC_OPT_HELP[SHORT]}, --${DALC_OPT_HELP[LONG]}
     ${DALC_OPT_HELP[DESC]}
+
+  --${DALC_OPT_LAF_BACKEND[LONG]} <backend>
+    ${DALC_OPT_LAF_BACKEND[DESC]}
 
   --${DALC_OPT_GIT_REF_SKIA[LONG]} <git-ref>
     ${DALC_OPT_GIT_REF_SKIA[DESC]}
@@ -138,9 +143,6 @@ Usage:
 
   --${DALC_OPT_BUILD_TYPE[LONG]} <build-type>
     ${DALC_OPT_BUILD_TYPE[DESC]}
-
-  --${DALC_OPT_HEADLESS[LONG]}
-    ${DALC_OPT_HEADLESS[DESC]}
 
   --${DALC_OPT_WITH_GPP[LONG]}
     ${DALC_OPT_WITH_GPP[DESC]}
@@ -224,10 +226,11 @@ dalc_build_aseprite() {
 	local git_ref_aseprite="$4"
 
 	local build_type="$5"
-	local enable_ui="$6"
-	local path_deps_skia="$7"
+	local path_deps_skia="$6"
 
-	local compiler_chain="$8"
+	local compiler_chain="$7"
+
+	local laf_backend="$8"
 
 	mkdir -p "${path_out}"
 	cd "${path_out}"
@@ -272,17 +275,25 @@ dalc_build_aseprite() {
 		stdlib_flags='-DCMAKE_CXX_FLAGS:STRING=-stdlib=libc++ -DCMAKE_EXE_LINKER_FLAGS:STRING=-stdlib=libc++'
 	fi
 
-	# shellcheck disable=SC2086
-	cmake \
-		-DCMAKE_BUILD_TYPE="${build_type}" \
-		-DENABLE_UI="${enable_ui}" \
-		${stdlib_flags} \
-		-DLAF_BACKEND=skia \
-		-DSKIA_DIR="${path_deps_skia}" \
-		-DSKIA_LIBRARY_DIR="${path_deps_skia}/out/Release-x64" \
-		-DSKIA_LIBRARY="${path_deps_skia}/out/Release-x64/libskia.a" \
-		-G Ninja \
-		..
+	if [ "${laf_backend}" = skia ]; then
+		# shellcheck disable=SC2086
+		cmake \
+			-DCMAKE_BUILD_TYPE="${build_type}" \
+			${stdlib_flags} \
+			-DSKIA_DIR="${path_deps_skia}" \
+			-DSKIA_LIBRARY_DIR="${path_deps_skia}/out/Release-x64" \
+			-DSKIA_LIBRARY="${path_deps_skia}/out/Release-x64/libskia.a" \
+			-G Ninja \
+			..
+	else
+		# shellcheck disable=SC2086
+		cmake \
+			-DCMAKE_BUILD_TYPE="${build_type}" \
+			${stdlib_flags} \
+			-DLAF_BACKEND=none \
+			-G Ninja \
+			..
+	fi
 
 	echo -e "\e[37mLinking Aseprite...\e[0m"
 	ninja aseprite
