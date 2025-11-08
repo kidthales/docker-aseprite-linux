@@ -43,14 +43,14 @@ dalc_main() {
 
 	dalc_parse_args "$@"
 
-	dalc_build_deps \
-		"${DALC_PATH_DEPS}" \
-		"${DALC_PATH_DEPS_DEPOT_TOOLS}" \
-		"${DALC_GIT_URL_DEPOT_TOOLS}" \
-		"${DALC_PATH_DEPS_SKIA}" \
-		"${DALC_GIT_URL_SKIA}" \
-		"${DALC_GIT_REF_SKIA}" \
-		"${DALC_COMPILER_CHAIN}"
+	#dalc_build_deps \
+	#	"${DALC_PATH_DEPS}" \
+	#	"${DALC_PATH_DEPS_DEPOT_TOOLS}" \
+	#	"${DALC_GIT_URL_DEPOT_TOOLS}" \
+	#	"${DALC_PATH_DEPS_SKIA}" \
+	#	"${DALC_GIT_URL_SKIA}" \
+	#	"${DALC_GIT_REF_SKIA}" \
+	#	"${DALC_COMPILER_CHAIN}"
 
 	dalc_build_aseprite \
 		"${DALC_PATH_OUT}" \
@@ -277,12 +277,14 @@ dalc_build_aseprite() {
 		-DCMAKE_BUILD_TYPE="${build_type}" \
 		-DENABLE_UI="${enable_ui}" \
 		${stdlib_flags} \
-		-DLAF_BACKEND=skia \
-		-DSKIA_DIR="${path_deps_skia}" \
-		-DSKIA_LIBRARY_DIR="${path_deps_skia}/out/Release-x64" \
-		-DSKIA_LIBRARY="${path_deps_skia}/out/Release-x64/libskia.a" \
+		-DLAF_BACKEND=none \
 		-G Ninja \
 		..
+		#-DSKIA_DIR="${path_deps_skia}" \
+		#-DSKIA_LIBRARY_DIR="${path_deps_skia}/out/Release-x64" \
+		#-DSKIA_LIBRARY="${path_deps_skia}/out/Release-x64/libskia.a" \
+		#-G Ninja \
+		#..
 
 	echo -e "\e[37mLinking Aseprite...\e[0m"
 	ninja aseprite
