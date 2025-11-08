@@ -32,7 +32,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
 
 COPY --link --chmod=755 compile.sh /compile-aseprite
 
-VOLUME /dependencies
 VOLUME /output
 
 WORKDIR /output
