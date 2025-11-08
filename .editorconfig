@@ -24,9 +24,6 @@ trim_trailing_whitespace = false
 [.github/workflows/*.yml]
 indent_size = 2
 
-[{compose.{yaml,yml},compose.*.{yaml,yml}}]
-indent_size = 2
-
 [Dockerfile]
 indent_style = tab
 
