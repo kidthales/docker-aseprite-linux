@@ -25,7 +25,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
 	unzip
 
 ARG aseprite_git_ref=main
-ARG aseprite_build_type=RelWithDebInfo
+ARG aseprite_build_type=Release
 
 RUN git clone -b "${aseprite_git_ref}" --recursive https://github.com/aseprite/aseprite.git /opt/aseprite; \
 	mkdir -p /opt/aseprite/build
@@ -35,6 +35,8 @@ RUN	cd /opt/aseprite/build && export CC=clang && export CXX=clang++ && cmake \
 	-DCMAKE_CXX_FLAGS:STRING=-stdlib=libc++ \
 	-DCMAKE_EXE_LINKER_FLAGS:STRING=-stdlib=libc++ \
 	-DLAF_BACKEND=none \
+	-DENABLE_SCRIPTING=on \
+	-DENABLE_CCACHE=on \
 	-G Ninja \
 	.. \
 	&& ninja aseprite

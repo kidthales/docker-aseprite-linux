@@ -1,0 +1,23 @@
+name: Batch
+
+on:
+  workflow_dispatch: ~
+  schedule:
+    # UTC
+    - cron: 20 4 * * *
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  batch-build-and-push:
+    strategy:
+      fail-fast: false
+      matrix:
+        aseprite-git-ref: [v1.3.15, v1.3.15.1, v1.3.15.2, v1.3.15.3, v1.3.15.4, v1.3.15.5, main]
+    uses: ./.github/workflows/base.yml
+    with:
+      aseprite-git-ref: ${{ matrix.aseprite-git-ref }}
+    secrets:
+      ghcr-token: ${{ secrets.CR_PAT }}

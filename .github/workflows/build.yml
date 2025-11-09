@@ -3,53 +3,26 @@ name: Build
 on:
   workflow_dispatch:
     inputs:
-      git-ref-aseprite:
+      aseprite-git-ref:
         required: true
-        description: The desired git ref to build Aseprite from
+        type: string
+        description: The desired Aseprite git ref to build from.
         default: main
-
-  schedule:
-    # UTC
-    - cron: '20 4 * * *'
+      aseprite-build-type:
+        required: true
+        type: string
+        description: Usually one of 'Debug', 'Release', or 'RelWithDebInfo'.
+        default: Release
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.inputs.git-ref-aseprite || github.ref_name }}
-
+  group: ${{ github.workflow }}-${{ github.event.inputs.aseprite-git-ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
-  build_and_push:
-    name: Build & Push
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Compile Aseprite
-        run: docker compose run --build --rm aseprite --laf-backend none --git-ref-aseprite ${{ github.event.inputs.git-ref-aseprite || 'main' }}
-
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
-
-      - name: Build Docker Image
-        uses: docker/bake-action@v6
-        with:
-          targets: aseprite
-          push: true
-          files: |
-            compose.yaml
-            compose.image.yaml
-          no-cache: true
-          source: .
-        env:
-          ASEPRITE_GIT_REF: ${{ github.event.inputs.git-ref-aseprite || 'main' }}
-          IMAGES_PREFIX: 'ghcr.io/${{ github.repository_owner }}/'
+  build-and-push:
+    uses: ./.github/workflows/base.yml
+    with:
+      aseprite-git-ref: ${{ github.event.inputs.aseprite-git-ref }}
+      aseprite-build-type: ${{ github.event.inputs.aseprite-build-type }}
+    secrets:
+      ghcr-token: ${{ secrets.CR_PAT }}
