@@ -1,6 +1,6 @@
 # Docker Aseprite Headless
 
-[![Builds](https://github.com/github/kidthales/docker-aseprite-headless/workflows/batch.yml/badge.svg)](https://github.com/github/kidthales/docker-aseprite-headless/workflows/batch.yml)
+[![Builds](https://github.com/kidthales/docker-aseprite-headless/actions/workflows/batch.yml/badge.svg)](https://github.com/kidthales/docker-aseprite-headless/actions/workflows/batch.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
 Build your own Docker images featuring an [Aseprite](https://www.aseprite.org/) binary suitable for [CLI](https://www.aseprite.org/docs/cli/) use cases, such as in build scripts or automated workflows like GitHub Actions.
