@@ -20,4 +20,4 @@ jobs:
     with:
       aseprite-git-ref: ${{ matrix.aseprite-git-ref }}
     secrets:
-      ghcr-token: ${{ secrets.CR_PAT }}
+      ghcr-token: ${{ secrets.GITHUB_TOKEN }}

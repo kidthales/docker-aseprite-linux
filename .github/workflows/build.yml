@@ -25,4 +25,4 @@ jobs:
       aseprite-git-ref: ${{ github.event.inputs.aseprite-git-ref }}
       aseprite-build-type: ${{ github.event.inputs.aseprite-build-type }}
     secrets:
-      ghcr-token: ${{ secrets.CR_PAT }}
+      ghcr-token: ${{ secrets.GITHUB_TOKEN }}

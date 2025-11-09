@@ -1,115 +1,73 @@
-# Docker Aseprite Linux
+# Docker Aseprite Headless
 
-This repository allows you to compile Aseprite with Make & Docker Compose; it is a fork
-of [nilsve/docker-aseprite-linux](https://github.com/nilsve/docker-aseprite-linux) with some inspiration taken from
-things I like in [dunglas/symfony-docker](https://github.com/dunglas/symfony-docker).
+[![Builds](https://github.com/github/kidthales/docker-aseprite-headless/workflows/batch.yml/badge.svg)](https://github.com/github/kidthales/docker-aseprite-headless/workflows/batch.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
-> I was originally interested in automating Aseprite exports as part of my indie game dev 'stack'; I may have gotten
-> carried away here! 😅
+Build your own Docker images featuring an [Aseprite](https://www.aseprite.org/) binary suitable for [CLI](https://www.aseprite.org/docs/cli/) use cases, such as in build scripts or automated workflows like GitHub Actions.
+
+> [!TIP]  
+> If you would like to compile Aseprite with a GUI, please look to the [official documentation](https://github.com/aseprite/aseprite/blob/main/INSTALL.md) for more information. For use-cases that require a docker-based compilation targeting a Linux host, please take a look at [nilsve/docker-aseprite-linux](https://github.com/nilsve/docker-aseprite-linux).
 
 > [!WARNING]  
-> Supports Aseprite v1.3.15+ builds for Debian Trixie systems.
-
-> [!NOTE]  
-> I intend to refactor this project to focus on containerized headless Aseprite builds suitable for automated batch tasks. Project will be right-sized for this purpose (remove build options, etc.).
-
-
-## Features
-
-- A flexible docker compose driven compile script capable of:
-    - Building Aseprite with clang (default) or g++.
-    - Specifying build type (RelWithDebInfo, Debug, etc.).
-    - Specifying alternate git branches, tags, & hashes for Aseprite & Skia build sources.
-    - (Mostly) automated handling of dependencies & build outputs across differing build runs.
-    - Easily create headless builds.
-- A Makefile frontend with helpful targets for:
-    - Compiling Aseprite for a Linux host.
-    - Creating a docker image with a headless Aseprite build (maybe useful for exporting in some kind of CI setup?).
-    - Cleaning & removing builds & dependencies.
-
-## Requirements
-
-- [Docker](https://docs.docker.com/get-docker/) & [Docker Compose](https://docs.docker.com/compose/install/).
-- [GNU Make](https://www.gnu.org/software/make/).
+> This project only supports building Aseprite v1.3.15+ for Debian Trixie based images.
 
 ## Quickstart
 
-Compile Aseprite and output runtime resources to `output/build/bin`:
+To build a fresh image using an Aseprite binary built from the `main` branch of [Aseprite's GitHub repository](https://github.com/aseprite/aseprite):
 
 ```shell
-make aseprite
+# Creates image with tag aseprite:main-headless
+docker buildx bake --pull --no-cache
 ```
 
-Build a Docker image with headless Aseprite:
+To confirm that the image runs as a container:
 
 ```shell
-make image
+docker run --rm -it aseprite:main-headless --help
 ```
 
-## Usage
+To perform some Aseprite cli task on some file in the current host directory:
 
-```text
- —— ⬜ 🐳 Docker Aseprite Linux Makefile 🐳 ⬜ ——————————————————————————————————
-help                           Outputs this help screen.
-help-aseprite                  Outputs compile-aseprite help screen.
-aseprite                       Compile Aseprite, pass the parameter "c=" to specify compilation options, example: make aseprite c='--git-ref-aseprite v1.3.9'.
-image                          Build Aseprite image (headless).
-clean                          Remove Aseprite build artifacts.
-dist-clean                     Remove Aseprite build artifacts & all build dependencies.
-dist-clean-aseprite            Remove Aseprite build artifacts & project.
-dist-clean-depot               Remove depot_tools build dependency.
-dist-clean-skia                Remove skia build dependency.
+```shell
+docker run --rm -it -v .:/workspace aseprite:main-headless --batch --layer 'Layer 1' example.aseprite --save-as example.png
 ```
 
-```text
-Compile Aseprite for Linux
+To build from some other ref within the Aseprite repository, override the bake variable's default value:
 
-Usage:
-  /compile-aseprite [-h|--help] | [--laf-backend <backend>] [--git-ref-skia <git-ref>] [--git-ref-aseprite <git-ref>] [--build-type <build-type>]  [--with-g++]
-
-  -h, --help
-    Outputs this help screen.
-
-  --laf-backend <backend>
-    The graphics backend to use; for 'headless' builds, specify none. Defaults to skia.
-
-  --git-ref-skia <git-ref>
-    The git-ref to use when cloning https://github.com/aseprite/skia.git. Defaults to aseprite-m124.
-
-  --git-ref-aseprite <git-ref>
-    The git-ref to use when cloning https://github.com/aseprite/aseprite.git. Defaults to main.
-
-  --build-type <build-type>
-    The value used for -DCMAKE_BUILD_TYPE. Defaults to RelWithDebInfo.
-
-  --with-g++
-      Use the g++ compiler toolchain. Default is clang.
+```shell
+# Creates image with tag aseprite:v1.3.15.5-headless
+ASEPRITE_GIT_REF=v1.3.15.5 docker buildx bake --pull --no-cache
 ```
 
-## Additional Information
+Please refer to the [docker-bake](./docker-bake.hcl) file for all available bake variables and their default values.
 
-### Compilation Toolchain
+## Makefile
 
-By default, clang is used to build all dependencies along with Aseprite; Builds with g++ are also supported.
+A simple Makefile is provided to help ease build invocations; a build using the bake variables' default values would look like:
 
-> IMPORTANT: When switching toolchains, make sure to run `make clean` between compilation runs.
+```shell
+make build
+```
 
-### `.env`
+After invoking this command, you will notice a git ignored `.env` file was generated; you may override the bake variable values here and the `make build` invocation will use them on subsequent runs. 
 
-Use a git ignored [.env file](https://docs.docker.com/compose/environment-variables/variable-interpolation/#env-file) to
-override compilation defaults and image naming.
+An example `.env` file's contents could look like:
 
 ```dotenv
-IMAGES_PREFIX=kidthales/
-ASEPRITE_GIT_REF=v1.3.15
-ASEPRITE_COMPILE_TIMEZONE=Canada/Pacific
+IMAGES_PREFIX="kidthales/"
+ASEPRITE_GIT_REF="v1.3.15"
+ASEPRITE_BUILD_TYPE="RelWithDebInfo"
 ```
 
-### FAQ
+> [!WARNING]  
+> Ensure that the values assigned in the `.env` file are wrapped in double quotes. This is a requirement of the underlying `docker buildx bake` command used to perform image builds.
 
-Please refer to the upstream project's [FAQ](https://github.com/nilsve/docker-aseprite-linux/blob/master/README.md#faq)
-for hints.
+To view the current bake configuration based on the `.env` file content:
 
-## License
+```shell
+make print
+```
 
-[MIT](./LICENSE)
+## GitHub Actions
+
+Some example workflows are utilized in this project to help build and push images to the repository owner's GitHub container registry. When using these workflows in your own repository, please ensure that you are familiar with [authenticating in a GitHub Actions workflow](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-in-a-github-actions-workflow) and the steps laid out for [upgrading a workflow that accesses a registry using a personal access token](https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions#upgrading-a-workflow-that-accesses-a-registry-using-a-personal-access-token).

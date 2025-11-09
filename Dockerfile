@@ -67,6 +67,8 @@ RUN ln -s /docker-aseprite-entrypoint /usr/local/bin/docker-aseprite-entrypoint
 # Smoke test.
 RUN /docker-aseprite-entrypoint --help
 
+WORKDIR /workspace
+
 ENTRYPOINT ["docker-aseprite-entrypoint"]
 
 CMD ["--help"]
