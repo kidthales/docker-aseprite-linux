@@ -1,40 +1,16 @@
 # Executables (local)
-DOCKER_COMP = docker compose
-
-# Executables
-RUN_BASH = $(DOCKER_COMP) run --rm bash
+DOCKER_BAKE = touch .env && docker buildx bake -f .env -f docker-bake.hcl
 
 # Misc
 .DEFAULT_GOAL = help
-.PHONY        : help help-aseprite aseprite image clean dist-clean dist-clean-aseprite dist-clean-depot dist-clean-skia
+.PHONY        : help build print
 
-## —— ⬜ 🐳 Docker Aseprite Linux Makefile 🐳 ⬜ ——————————————————————————————————
+## —— 👾  🐳  Docker Aseprite Headless Makefile 🐳  👾  ————————————————————————————
 help: ## Outputs this help screen.
 	@grep -E '(^[a-zA-Z0-9\./_-]+:.*?##.*$$)|(^##)' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}{printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
 
-help-aseprite: ## Outputs compile-aseprite help screen.
-	@$(RUN_BASH) bash /project/compile.sh --help
+build: ## Build the Aseprite headless image.
+	@$(DOCKER_BAKE) --pull --no-cache
 
-aseprite: ## Compile Aseprite, pass the parameter "c=" to specify compilation options, example: make aseprite c='--git-ref-aseprite v1.3.9'.
-	@$(eval c ?=)
-	@$(DOCKER_COMP) run --build --rm aseprite $(c)
-
-image: ## Build Aseprite image (headless).
-image: c=--laf-backend none
-image: aseprite
-	@$(DOCKER_COMP) -f compose.yaml -f compose.image.yaml build aseprite
-
-clean: ## Remove Aseprite build artifacts.
-	@$(RUN_BASH) rm -rf /project/output/aseprite/build
-
-dist-clean: ## Remove Aseprite build artifacts & all build dependencies.
-dist-clean: dist-clean-aseprite dist-clean-depot dist-clean-skia
-
-dist-clean-aseprite: ## Remove Aseprite build artifacts & project.
-	@$(RUN_BASH) rm -rf /project/output/aseprite
-
-dist-clean-depot: ## Remove depot_tools build dependency.
-	@$(RUN_BASH) rm -rf /project/dependencies/depot_tools
-
-dist-clean-skia: ## Remove skia build dependency.
-	@$(RUN_BASH) rm -rf /project/dependencies/skia
+print: ## Prints the bake options used to build the Aseprite headless image.
+	@$(DOCKER_BAKE) --print

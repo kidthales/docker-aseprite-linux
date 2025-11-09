@@ -21,13 +21,10 @@ indent_style = tab
 [*.{yaml,yml}]
 trim_trailing_whitespace = false
 
-[.github/workflows/*.yml]
+[*.hcl]
 indent_size = 2
 
-[.gitmodules]
-indent_style = tab
-
-[{compose.{yaml,yml},compose.*.{yaml,yml}}]
+[.github/workflows/*.yml]
 indent_size = 2
 
 [Dockerfile]
