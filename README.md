@@ -43,15 +43,15 @@ Please refer to the [docker-bake](./docker-bake.hcl) file for all available bake
 
 ## Makefile
 
-A simple Makefile is provided to help ease build invocations; a build using the bake variables' default values would look like:
+A simple Makefile is provided to help ease build invocations:
 
-```shell
-make build
+```text
+ —— Docker Aseprite Headless Makefile ———————————————————————————————————————— 
+help                           Outputs this help screen.
+build                          Build the toolkit images. Pass the parameter "c=" to pass additional options and arguments to docker bake; example: make build c="--no-cache --pull"
 ```
 
-After invoking this command, you will notice a git ignored `.env` file was generated; you may override the bake variable values here and the `make build` invocation will use them on subsequent runs. 
-
-An example `.env` file's contents could look like:
+You may populate a git-ignored `.env` file with bake variable values, for use with the `make build` command. For example:
 
 ```dotenv
 IMAGES_PREFIX="kidthales/"
@@ -61,12 +61,6 @@ ASEPRITE_BUILD_TYPE="RelWithDebInfo"
 
 > [!WARNING]  
 > Ensure that the values assigned in the `.env` file are wrapped in double quotes. This is a requirement of the underlying `docker buildx bake` command used to perform image builds.
-
-To view the current bake configuration based on the `.env` file content:
-
-```shell
-make print
-```
 
 ## GitHub Actions
 
