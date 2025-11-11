@@ -3,7 +3,7 @@
 [![Batch](https://github.com/kidthales/docker-aseprite-headless/actions/workflows/batch.yml/badge.svg)](https://github.com/kidthales/docker-aseprite-headless/actions/workflows/batch.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
-Build your own Docker images featuring an [Aseprite](https://www.aseprite.org/) binary suitable for [CLI](https://www.aseprite.org/docs/cli/) use cases, such as in build scripts or automated workflows like GitHub Actions.
+Build your own Docker images featuring an [Aseprite](https://www.aseprite.org/) binary suitable for [CLI](https://www.aseprite.org/docs/cli/) use cases such as in build scripts or automated workflows like GitHub Actions.
 
 > [!TIP]  
 > If you would like to compile Aseprite with a GUI, please look to the [official documentation](https://github.com/aseprite/aseprite/blob/main/INSTALL.md) for more information. For use-cases that require a docker-based compilation targeting a Linux host, please take a look at [nilsve/docker-aseprite-linux](https://github.com/nilsve/docker-aseprite-linux).
@@ -48,7 +48,7 @@ A simple Makefile is provided to help ease build invocations:
 ```text
  —— Docker Aseprite Headless Makefile ———————————————————————————————————————— 
 help                           Outputs this help screen.
-build                          Build the toolkit images. Pass the parameter "c=" to pass additional options and arguments to docker bake; example: make build c="--no-cache --pull"
+build                          Build the aseprite image. Pass the parameter "c=" to pass additional options and arguments to docker bake; example: make build c="--no-cache --pull"
 ```
 
 You may populate a git-ignored `.env` file with bake variable values, for use with the `make build` command. For example:

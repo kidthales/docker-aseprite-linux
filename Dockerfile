@@ -40,7 +40,7 @@ RUN	cd /opt/aseprite/build && export CC=clang && export CXX=clang++ && cmake \
 FROM app-upstream AS app
 
 LABEL org.opencontainers.image.source=https://github.com/kidthales/docker-aseprite-headless
-LABEL org.opencontainers.image.description="Provides an Aseprite binary suitable for CLI use cases, such as in build scripts or automated workflows like GitHub Actions. "
+LABEL org.opencontainers.image.description="Provides an Aseprite binary suitable for CLI use cases such as in build scripts or automated workflows like GitHub Actions."
 LABEL org.opencontainers.image.licenses=MIT
 
 COPY --from=builder /opt/aseprite/build/bin /opt/aseprite/bin
