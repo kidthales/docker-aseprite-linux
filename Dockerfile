@@ -1,9 +1,5 @@
 #syntax=docker/dockerfile:1.4
 
-# The different stages of this Dockerfile are meant to be built into separate images.
-# https://docs.docker.com/develop/develop-images/multistage-build/#stop-at-a-specific-build-stage
-# https://docs.docker.com/build/bake/reference/#targettarget
-
 FROM builder-upstream AS builder
 
 # Install dependencies.
@@ -42,6 +38,10 @@ RUN	cd /opt/aseprite/build && export CC=clang && export CXX=clang++ && cmake \
 	&& ninja aseprite
 
 FROM app-upstream AS app
+
+LABEL org.opencontainers.image.source=https://github.com/kidthales/docker-aseprite-headless
+LABEL org.opencontainers.image.description="Provides an Aseprite binary suitable for CLI use cases, such as in build scripts or automated workflows like GitHub Actions. "
+LABEL org.opencontainers.image.licenses=MIT
 
 COPY --from=builder /opt/aseprite/build/bin /opt/aseprite/bin
 
